@@ -15,7 +15,16 @@ SRCFILES := *.go
 all: firectl
 
 firectl: $(SRCFILES)
-	go build
+	go build -o firectl
+
+release: $(SRCFILES)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+		    -a \
+		    -installsuffix cgo \
+		    -ldflags "-s" \
+		    -gcflags=all=-trimpath=${TRIMPATH} \
+		    -asmflags=all=-trimpath=${TRIMPATH} \
+		    -o firectl
 
 test:
 	go test -v ./...
